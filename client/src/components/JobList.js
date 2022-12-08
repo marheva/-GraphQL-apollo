@@ -14,7 +14,7 @@ function JobItem({ job }) {
 function JobList({ jobs }) {
     return (
         <ul className='box'>
-            {jobs.map((job) => (
+            {jobs?.map((job) => (
                 <JobItem key={job.id} job={job} />
             ))}
         </ul>

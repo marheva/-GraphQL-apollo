@@ -45,6 +45,10 @@ async function getCompany(companyId) {
                 id
                 name
                 description
+                jobs {
+                    id
+                    title
+                }
             }
         }
     `;

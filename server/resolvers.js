@@ -17,4 +17,8 @@ export const resolvers = {
             return Company.findById(companyId);
         },
     },
+    Company: {
+        // on the  job schema we have an `companyId`;
+        jobs: ({ id: rootCompanyId }) => Job.findAll(({ companyId: jobCompanyId }) => jobCompanyId === rootCompanyId),
+    },
 };
