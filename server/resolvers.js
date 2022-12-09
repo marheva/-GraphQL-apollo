@@ -1,19 +1,25 @@
+// CONTROLLERS
 import { Job, Company } from './db.js';
 
 export const resolvers = {
     Query: {
-        job: (root, { id }) => {
+        job: (_root, { id }) => {
             return Job.findById(id);
         },
         jobs: () => Job.findAll(),
-        company: (root, { id }) => {
+        company: (_root, { id }) => {
             return Company.findById(id);
         },
     },
+    Mutation: {
+        createJob: (_root, { input }) => Job.create(input),
+        deleteJob: (_root, { id: jobId }) => Job.delete(jobId),
+        updateJob: (_root, { input }) => Job.update(input),
+    },
     Job: {
         // job => parent object (first one);
-        company: (root) => {
-            const { companyId = '' } = root;
+        company: (_root) => {
+            const { companyId = '' } = _root;
             return Company.findById(companyId);
         },
     },
