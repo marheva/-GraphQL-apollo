@@ -1,5 +1,11 @@
 # GraphQL Job Board;
 
+====================================================================================
+
+#### How to use React Query with React and GraphQL
+
+# `https://www.takeshape.io/articles/how-to-use-react-query-with-react-and-graphql/`
+
 #### additional packages CLIENT:
 
 -   `graphql-request`;
@@ -31,10 +37,9 @@
 `ID` => means `Optional` => should be a null;
 `jobs: [Job!]` => means each element in the array can not be null => each element should be object || empty array;
 
-    [`Definitions`]
-    ```
+[`Definitions`]
+
         type Query {
-            // list of Jobs;
             jobs: [Job!]
         }
 
@@ -43,18 +48,31 @@
             title: String!
             description: String
         }
-    ```
-    [`Resolvers`]
+         type Mutation {
+            createJob(input: CreateJobInputType!): Job
+        }
 
-    ````
+        input CreateJobInputType {
+            title: String!
+            companyId: ID!
+            description: String
+        }
+
+[`Resolvers`]
+
         export const resolvers = {
             Query: {
                 jobs: () => [],
             },
+            Mutation: {
+                createJob: (_root, { input }) => {
+                    return Job.create(input);
+                },
+            },
         };
-    ````
-    [`Postman POST call`]
-    ```
+
+[`Postman POST call`]
+
         query {
             jobs {
                 id,
@@ -62,10 +80,9 @@
                 description
             }
         }
-    ```
 
-    [`Postman POST call with params(variables)`]
-    ```
+[`Postman POST call with params(variables)`]
+
     query JobQuery($id: ID!){
         job(id:$id) {
             id,
@@ -78,6 +95,15 @@
         }
     }
 
-    ```
+    mutation CreateJobMutation($input:CreateJobInputType!){
+        job: createJob(input:$input) {
+            id
+            title
+            company {
+                id
+                name
+            }
+        }
+    }
 
 ====================================================================================
