@@ -1,10 +1,16 @@
 # GraphQL Job Board;
 
-====================================================================================
+#### How to use React Query with React and GraphQL;
 
-#### How to use React Query with React and GraphQL
+`https://www.takeshape.io/articles/how-to-use-react-query-with-react-and-graphql/`;
 
-# `https://www.takeshape.io/articles/how-to-use-react-query-with-react-and-graphql/`
+#### Folder/Schema Structure with GraphQL;
+
+`https://javascript.plainenglish.io/writing-a-node-js-graphql-backend-that-actually-scales-a-complete-guide-part-1-setup-cddceae25bdc`;
+
+#### JWT.IO allows you to decode, verify and generate JWT;
+
+`https://jwt.io/`
 
 #### additional packages CLIENT:
 
@@ -59,6 +65,7 @@
         }
 
 [`Resolvers`]
+`context` - contains additional resolvers properties;
 
         export const resolvers = {
             Query: {
