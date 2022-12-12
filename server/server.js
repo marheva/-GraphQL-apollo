@@ -33,7 +33,12 @@ app.post('/login', async (req, res) => {
 });
 
 const typeDefs = await readFile('./schema.graphql', 'utf-8');
-const context = ({ req }) => ({ auth: req.auth });
+const context = async ({ req }) => {
+    if (!req.auth) return {};
+    const { sub: userId } = req.auth;
+    const userById = await User.findById(userId);
+    return { user: userById };
+};
 const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
