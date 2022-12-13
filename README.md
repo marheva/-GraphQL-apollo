@@ -15,7 +15,8 @@
 #### additional packages CLIENT:
 
 -   `graphql-request`;
--   `graphql`
+-   `graphql`;
+-   `@apollo/client`;
 
 ====================================================================================
 
@@ -113,4 +114,7 @@
         }
     }
 
-====================================================================================
+[`Request Authentication`]
+
+    const HEADERS = { Authorization: `Bearer ${getAccessToken()}` };
+    const { errors, job } = await request(GRAPHQL_URL, query, variables, HEADERS);

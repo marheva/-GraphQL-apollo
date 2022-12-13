@@ -1,6 +1,14 @@
 // CONTROLLERS
 import { Job, Company } from './db.js';
 
+const UNAUTHORIZED_USER_MESSAGE = 'Unauthorized User.';
+
+function rejectIf(condition) {
+    if (condition) {
+        throw new Error(UNAUTHORIZED_USER_MESSAGE);
+    }
+}
+
 export const resolvers = {
     Query: {
         job: (_root, { id }) => {
@@ -17,21 +25,29 @@ export const resolvers = {
                 user: { id: userId, companyId: userCompanyId },
             } = context;
 
-            if (!userId) {
-                throw new Error('Unauthorized User.');
-            }
+            rejectIf(!userId);
             return Job.create({ ...input, companyId: userCompanyId });
         },
-        deleteJob: (_root, { id: jobId }, context) => {
+        deleteJob: async (_root, { id: jobId }, context) => {
             const {
-                user: { id: userId },
+                user: { id: userId, companyId: userCompanyId },
             } = context;
-            if (!userId) {
-                throw new Error('Unauthorized User.');
-            }
+            rejectIf(!userId);
+            const { companyId: jobCompanyId } = await Job.findById(jobId);
+
+            rejectIf(jobCompanyId !== userCompanyId);
             return Job.delete(jobId);
         },
-        updateJob: (_root, { input }) => Job.update(input),
+        updateJob: async (_root, { input }, context) => {
+            const { id: jobId } = input;
+            const {
+                user: { id: userId, companyId: userCompanyId },
+            } = context;
+            rejectIf(!userId);
+            const { companyId: jobCompanyId } = await Job.findById(jobId);
+            rejectIf(jobCompanyId !== userCompanyId);
+            return Job.update({ ...input, companyId: userCompanyId });
+        },
     },
     Job: {
         // job => parent object (first one);
