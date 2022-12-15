@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { ApolloProvider } from '@apollo/client';
 import { useNavigate } from 'react-router';
 import { Route, Routes } from 'react-router-dom';
+import { client } from '../src/graphql/queries';
 import { isLoggedIn } from './auth';
 import CompanyDetail from './components/CompanyDetail';
 import LoginForm from './components/LoginForm';
@@ -24,7 +26,7 @@ function App() {
     };
 
     return (
-        <>
+        <ApolloProvider client={client}>
             <NavBar loggedIn={loggedIn} onLogout={handleLogout} />
             <main className='section'>
                 <Routes>
@@ -35,7 +37,7 @@ function App() {
                     <Route exact path='/login' element={<LoginForm onLogin={handleLogin} />} />
                 </Routes>
             </main>
-        </>
+        </ApolloProvider>
     );
 }
 

@@ -306,3 +306,9 @@
         `;
 
     ```
+
+[`CLIENT`]
+
+-   ApolloProvider => root app file;
+-   useQuery => like on react-query;
+    -   `jetJobs()` replaced to => `const { data: { jobs = [] } = {}, loading, error } = useQuery(JOBS_QUERY, { fetchPolicy: `network-only` });`

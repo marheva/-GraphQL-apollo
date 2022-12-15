@@ -1,30 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router';
-import { getCompany } from '../graphql/queries';
+import { useCompanyDetail } from '../graphql/hooks/useCompanyDetail';
 import JobList from './JobList';
 
-const TEMPORARY_LOADING_COMPONENT = 'Loading...';
+const TEMPORARY_PRELOADER = 'Loading...';
+const TEMPORARY_ERROR = 'Sorry, something went wrong.';
 
 function CompanyDetail() {
     const { companyId } = useParams();
-    const [company, setCompany] = useState([]);
+    const {
+        company: { name: companyName = '', description: companyDescription = '', jobs: companyJobs = [] },
+        loading,
+        error,
+    } = useCompanyDetail(companyId);
 
-    useEffect(() => {
-        async function fetchCompany() {
-            let _company = await getCompany(companyId);
-            setCompany(_company);
-        }
-        fetchCompany(companyId);
-    }, [companyId]);
-
-    if (!company) return TEMPORARY_LOADING_COMPONENT;
+    if (loading) return <p>{TEMPORARY_PRELOADER}</p>;
+    if (error) return <p>{TEMPORARY_ERROR}</p>;
 
     return (
         <div>
-            <h1 className='title'>{company.name}</h1>
-            <div className='box'>{company.description}</div>
-            <h5 className='title is-5'>Jobs at {company.name}</h5>
-            <JobList jobs={company.jobs} />
+            <h1 className='title'>{companyName}</h1>
+            <div className='box'>{companyDescription}</div>
+            <h5 className='title is-5'>Jobs at {companyName}</h5>
+            <JobList jobs={companyJobs} />
         </div>
     );
 }

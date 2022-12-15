@@ -1,30 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import { getJob } from '../graphql/queries';
+import { useJobDetail } from '../graphql/hooks/useJobDetail';
 
-const TEMPORARY_LOADING_COMPONENT = 'Loading...';
+const TEMPORARY_PRELOADER = 'Loading...';
+const TEMPORARY_ERROR = 'Sorry, something went wrong.';
 
 function JobDetail() {
-    const [job, setJob] = useState(null);
     const { jobId } = useParams();
+    const {
+        job: { title: jobTitle = '', company: { id: companyId = '', name: companyName = '' } = {}, description: jobDescription = '' },
+        loading,
+        error,
+    } = useJobDetail(jobId);
 
-    useEffect(() => {
-        async function fetchJob(jobId) {
-            let _job = await getJob(jobId);
-            setJob(_job);
-        }
-        fetchJob(jobId);
-    }, [jobId]);
+    if (loading) return <p>{TEMPORARY_PRELOADER}</p>;
+    if (error) return <p>{TEMPORARY_ERROR}</p>;
 
-    if (!job) {
-        return TEMPORARY_LOADING_COMPONENT;
-    }
     return (
         <div>
-            <h1 className='title'>{job?.title}</h1>
-            <h2 className='subtitle'>{<Link to={`/companies/${job?.company?.id}`}>{job?.company?.name}</Link>}</h2>
-            <div className='box'>{job?.description}</div>
+            <h1 className='title'>{jobTitle}</h1>
+            <h2 className='subtitle'>{<Link to={`/companies/${companyId}`}>{companyName}</Link>}</h2>
+            <div className='box'>{jobDescription}</div>
         </div>
     );
 }

@@ -4,7 +4,7 @@ import { getAccessToken } from '../auth';
 const GRAPHQL_URL = `http://localhost:9000/graphql`;
 const HEADERS = { Authorization: `Bearer ${getAccessToken()}` };
 
-const JOB_DETAIL_FRAGMENT = gql`
+export const JOB_DETAIL_FRAGMENT = gql`
     fragment JobDetail on Job {
         id
         title
@@ -17,7 +17,20 @@ const JOB_DETAIL_FRAGMENT = gql`
     }
 `;
 
-const JOB_QUERY = gql`
+export const COMPANY_DETAIL_FRAGMENT = gql`
+    fragment CompanyDetail on Company {
+        id
+        name
+        description
+        jobs {
+            id
+            title
+        }
+        __typename
+    }
+`;
+
+export const JOB_QUERY = gql`
     query JobQuery($id: ID!) {
         job(id: $id) {
             ...JobDetail
@@ -27,7 +40,33 @@ const JOB_QUERY = gql`
     ${JOB_DETAIL_FRAGMENT}
 `;
 
-const client = new ApolloClient({
+export const JOBS_QUERY = gql`
+    query JobsQuery {
+        jobs {
+            id
+            title
+            description
+            company {
+                id
+                name
+            }
+            __typename
+        }
+        __typename
+    }
+`;
+
+export const COMPANY_QUERY = gql`
+    query CompanyQuery($id: ID!) {
+        company(id: $id) {
+            ...CompanyDetail
+        }
+        __typename
+    }
+    ${COMPANY_DETAIL_FRAGMENT}
+`;
+
+export const client = new ApolloClient({
     uri: GRAPHQL_URL,
     cache: new InMemoryCache(),
     // defaultOptions: {
@@ -44,65 +83,65 @@ const client = new ApolloClient({
 });
 
 // [GET_JOBS]
-async function getJobs() {
-    const query = gql`
-        query {
-            jobs {
-                id
-                title
-                description
-                company {
-                    id
-                    name
-                }
-                __typename
-            }
-            __typename
-        }
-    `;
-    const {
-        data: { jobs },
-    } = await client.query({
-        query: query,
-        fetchPolicy: `network-only`,
-    });
+// async function getJobs() {
+//     const query = gql`
+//         query {
+//             jobs {
+//                 id
+//                 title
+//                 description
+//                 company {
+//                     id
+//                     name
+//                 }
+//                 __typename
+//             }
+//             __typename
+//         }
+//     `;
+//     const {
+//         data: { jobs },
+//     } = await client.query({
+//         query: query,
+//         fetchPolicy: `network-only`,
+//     });
 
-    return jobs;
-}
+//     return jobs;
+// }
 
 // [GET_JOB]
-async function getJob(jobId) {
-    const variables = { id: jobId };
+// async function getJob(jobId) {
+//     const variables = { id: jobId };
 
-    const {
-        data: { job },
-    } = await client.query({ query: JOB_QUERY, variables: variables });
+//     const {
+//         data: { job },
+//     } = await client.query({ query: JOB_QUERY, variables: variables });
 
-    return job;
-}
+//     return job;
+// }
 
-async function getCompany(companyId) {
-    const query = gql`
-        query CompanyQuery($id: ID!) {
-            company(id: $id) {
-                id
-                name
-                description
-                jobs {
-                    id
-                    title
-                }
-            }
-        }
-    `;
-    const variables = { id: companyId };
+// async function getCompany(companyId) {
+//     const query = gql`
+//         query CompanyQuery($id: ID!) {
+//             company(id: $id) {
+//                 id
+//                 name
+//                 description
+//                 jobs {
+//                     id
+//                     title
+//                 }
+//             }
+//         }
+//     `;
+//     const variables = { id: companyId };
 
-    const {
-        data: { company },
-    } = await client.query({ query: query, variables: variables });
+//     const {
+//         data: { company },
+//     } = await client.query({ query: query, variables: variables });
 
-    return company;
-}
+//     return company;
+// }
 
 async function createJob(input) {
     const mutation = gql`
@@ -139,4 +178,4 @@ async function createJob(input) {
     return { errors, job };
 }
 
-export { getJobs, getJob, getCompany, createJob };
+export { createJob };
