@@ -13,7 +13,6 @@ export const JOB_DETAIL_FRAGMENT = gql`
             id
             name
         }
-        __typename
     }
 `;
 
@@ -26,7 +25,6 @@ export const COMPANY_DETAIL_FRAGMENT = gql`
             id
             title
         }
-        __typename
     }
 `;
 
@@ -35,7 +33,6 @@ export const JOB_QUERY = gql`
         job(id: $id) {
             ...JobDetail
         }
-        __typename
     }
     ${JOB_DETAIL_FRAGMENT}
 `;
@@ -50,9 +47,7 @@ export const JOBS_QUERY = gql`
                 id
                 name
             }
-            __typename
         }
-        __typename
     }
 `;
 
@@ -61,9 +56,17 @@ export const COMPANY_QUERY = gql`
         company(id: $id) {
             ...CompanyDetail
         }
-        __typename
     }
     ${COMPANY_DETAIL_FRAGMENT}
+`;
+
+export const CREATE_JOB_MUTATION = gql`
+    mutation CreateJobMutation($input: CreateJobInputType!) {
+        job: createJob(input: $input) {
+            ...JobDetail
+        }
+    }
+    ${JOB_DETAIL_FRAGMENT}
 `;
 
 export const client = new ApolloClient({
@@ -94,9 +97,9 @@ export const client = new ApolloClient({
 //                     id
 //                     name
 //                 }
-//                 __typename
+//
 //             }
-//             __typename
+//
 //         }
 //     `;
 //     const {
