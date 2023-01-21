@@ -8,7 +8,7 @@ export function useJobDetail(jobId) {
         error,
     } = useQuery(JOB_QUERY, {
         variables: { id: jobId },
-        fetchPolicy: `network-only`,
+        // fetchPolicy: `network-only`,
     });
 
     return { job, loading, error };
